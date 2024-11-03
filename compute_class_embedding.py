@@ -248,3 +248,34 @@ Default: "unitsphere"''')
                 'label2ind' : linear_labels,
                 'embedding' : embedding
         }, dump_file)
+
+    # load class names
+    if 'Pokemon' in args.hierarchy:
+        class_names = []
+        with open('Pokemon-Hierarchy/class_names.txt', 'r') as file:
+            for line in file:
+                class_names.append(line.strip())
+    else:
+        class_names = []
+        with open('CUB-Hierarchy/class_names.txt', 'r') as file:
+            for line in file:
+                class_names.append(line.strip())
+    
+    # save as we can read with the folloing code
+    import torch
+    embs_data = dict(objects=class_names, embeddings=embedding)
+    if 'Pokemon' in args.hierarchy:
+        torch.save(embs_data, "./embeddings/pokemon_spherical_hierarchy_200d.pth")
+        import pdb
+        pdb.set_trace()
+    else:
+        torch.save(embs_data, "./embeddings/cub200_balanced_spherical_hierarchy_200d.pth")
+    
+    # load testing
+    if 'Pokemon' in args.hierarchy:
+        embs_data = torch.load("./embeddings/pokemon_spherical_hierarchy_200d.pth")
+    else:
+        embs_data = torch.load("./embeddings/cub200_balanced_spherical_hierarchy_200d.pth")
+    class_names, embs = embs_data['objects'], embs_data['embeddings']
+
+    
